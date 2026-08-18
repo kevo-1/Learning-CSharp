@@ -1,0 +1,15 @@
+D:\Projects\Learning-C#\LibraryProject\bin\Debug\net10.0\LibraryProject.exe
+D:\Projects\Learning-C#\LibraryProject\bin\Debug\net10.0\LibraryProject.deps.json
+D:\Projects\Learning-C#\LibraryProject\bin\Debug\net10.0\LibraryProject.runtimeconfig.json
+D:\Projects\Learning-C#\LibraryProject\bin\Debug\net10.0\LibraryProject.dll
+D:\Projects\Learning-C#\LibraryProject\bin\Debug\net10.0\LibraryProject.pdb
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.AssemblyInfoInputs.cache
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.AssemblyInfo.cs
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.csproj.CoreCompileInputs.cache
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.sourcelink.json
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.dll
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\refint\LibraryProject.dll
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.pdb
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\LibraryProject.genruntimeconfig.cache
+D:\Projects\Learning-C#\LibraryProject\obj\Debug\net10.0\ref\LibraryProject.dll
