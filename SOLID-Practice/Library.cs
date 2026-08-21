@@ -42,8 +42,8 @@ public class AudioBook : LibraryItem
 
 public interface ILibraryService
 {
-    void CheckOut(LibraryItem item, string memberName);
-    void Return(LibraryItem item);
+    void CheckOut(CheckableLibraryItem item, string memberName);
+    void Return(CheckableLibraryItem item);
     void PrintMonthlyReport();
     double CalculateLateFee(CheckableLibraryItem item, MemberType memberType);
     void SendOverdueMessage(NotificationChannels channels, string context);
@@ -73,7 +73,6 @@ public interface IReportManager
 {
     public void PrintReport();
     public void AddCheckoutLog(string entry);
-    public string GetCheckoutLogs();
 }
 
 public class ReportManager: IReportManager
@@ -90,10 +89,6 @@ public class ReportManager: IReportManager
     public void AddCheckoutLog(string entry)
     {
         _reportRepository.AddCheckoutLog(entry);
-    }
-    public string GetCheckoutLogs()
-    {
-        return _reportRepository.GetCheckoutLogs();
     }
     public void PrintReport()
     {
@@ -244,14 +239,14 @@ public class LibraryManager : ILibraryService
         _reportManager = reportManager;
     }
 
-    public void CheckOut(LibraryItem item, string memberName)
+    public void CheckOut(CheckableLibraryItem item, string memberName)
     {
         string entry = $"{item.Title} checked out by {memberName}";
         _reportManager.AddCheckoutLog(entry);
         Console.WriteLine(entry);
     }
 
-    public void Return(LibraryItem item)
+    public void Return(CheckableLibraryItem item)
     {
         Console.WriteLine($"{item.Title} returned.");
     }
