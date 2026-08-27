@@ -1,8 +1,10 @@
 ﻿using System.Collections.Frozen;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using CampusPractice.FluentApi;
 using CampusPractice.FluentApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 using var db = new CampusContext();
 
@@ -92,3 +94,32 @@ q17.ForEach(Console.WriteLine);
 
 
 // ----------------------------------------- Section C -------------------------------------------------------------
+
+//Group courses by DepartmentId and return { DepartmentId, CourseCount }.
+var q18 = db.Courses.GroupBy(c => c.DepartmentId).Select(g => new{Id = g.Key, CourseCount = g.Count()}).ToList();
+q18.ForEach(Console.WriteLine);
+
+
+//For each department, compute the average Credits of its courses.
+var q19 = db.Courses.GroupBy(c => c.DepartmentId).Select(g => new {Id = g.Key, AvgCredits = g.Average(c => c.Credits)}).ToList();
+Console.WriteLine(q19);
+
+
+//Find the student(s) with the highest average Grade across all their graded enrollments (exclude nulls).
+var q20 = db.Enrollments.Where(e => e.Grade != null).GroupBy(e => e.StudentId).Select(g => new {studentId = g.Key, AvgGrade = g.Average(g => g.Grade)}).Take(5).ToList();
+q20.ForEach(Console.WriteLine);
+
+
+//Get the number of enrollments per course, sorted descending, top 5 only.
+var q21 = db.Enrollments.GroupBy(e => e.CourseId).Select(g => new {Course = g.Key, Enrollments = g.Count()}).OrderByDescending(x => x.Enrollments).Take(5).ToList();
+q21.ForEach(Console.WriteLine);
+
+
+//Group enrollments by Grade bucket (>= 3.7 = "A", >= 3.0 = "B", else "C or below"; nulls = "Ungraded") and count each bucket. (Think about whether this can run entirely in SQL or needs AsEnumerable() partway through — and why.)
+var q22 = db.Enrollments.Select(e => e.Grade == null?"Ungraded" : e.Grade >= 3.7m ? "A": e.Grade >= 3.0m? "B" : "C or below").GroupBy(b => b).Select(g => new {Bucket = g.Key, Count = g.Count()}).ToList();
+q22.ForEach(Console.WriteLine);
+
+
+//Find departments that have no instructors at all (left join + null check, or Any-based).
+var q23 = db.Departments.LeftJoin(db.Instructors, d => d.DepartmentId, i => i.DepartmentId, (d, i) => new { Department = d.Name, Instructor = i }).Where(x => x.Instructor == null).ToList();
+q23.ForEach(Console.WriteLine);
