@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Post> Posts { set; get; }
     public DbSet<Blog> Blogs { set; get; }
+    public DbSet<Author> Authors {set; get;}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -31,11 +32,13 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<Blog>().ToTable("Blog");
         modelBuilder.Entity<Post>().ToTable("Post");
+        modelBuilder.Entity<Author>().ToTable("Author");
         modelBuilder.Entity<Blog>(b =>
         {
             b.HasKey(d => d.Id);
             b.Property(d => d.Name).IsRequired().HasMaxLength(100);
             b.Property(d => d.Url).IsRequired().HasMaxLength(1500);
+            b.HasMany(b => b.Posts).WithOne(p => p.Blog).HasForeignKey(p => p.BlogId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Post>(p =>
@@ -45,7 +48,27 @@ public class AppDbContext : DbContext
             p.Property(d => d.Title).IsRequired().HasMaxLength(100);
             p.Property(d => d.Content).IsRequired().HasMaxLength(1500);
         });
+
+        modelBuilder.Entity<Author>(a =>
+        {
+            a.HasKey(a => a.Id);
+            a.Property(a => a.Email).IsRequired().HasMaxLength(250);
+            a.Property(a => a.FirstName).IsRequired().HasMaxLength(100);
+            a.Property(a => a.LastName).IsRequired().HasMaxLength(100);
+            a.Property(a => a.UserName).IsRequired().HasMaxLength(50);
+            a.HasMany(a => a.Posts).WithOne(p => p.Author).HasForeignKey(p => p.AuthorId).OnDelete(DeleteBehavior.Cascade);
+        });
     }
+}
+
+public class Author
+{
+    public required int Id {set; get;}
+    public required string FirstName {set; get;}
+    public required string LastName {set; get;}
+    public required string Email {set; get;}
+    public required string UserName {set; get;}
+    public List<Post> ?Posts {set; get;}
 }
 
 public class Post
@@ -54,12 +77,16 @@ public class Post
     public required string Title { set; get; }
     public required string Content { set; get; }
     public DateTime PublishedAt { set; get; }
+    public required Author Author {set; get;}
+    public required Blog Blog{set; get;}
+    public required int AuthorId {set; get;}
+    public required int BlogId {set; get;}
 }
 
 public class Blog
 {
     public required int Id { set; get; }
-    [MaxLength(50)]
     public required string Name { set; get; }
     public required string Url { set; get; }
+    public List<Post> ?Posts{set; get;}
 }
