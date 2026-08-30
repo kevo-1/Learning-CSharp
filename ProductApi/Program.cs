@@ -4,16 +4,22 @@ using Products.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddTransient<ILoggerService, ConsoleLoggerService>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapGet("/products", (IProductService service) =>
 {
     var products = service.GetAll();
     return products.Select(p => new ProductResponseDto(p.Id, p.Name, p.Price));
-});
+}).WithSummary("Returns all products");
 
 app.MapGet(
     "/products/{id}",
@@ -25,7 +31,9 @@ app.MapGet(
         var result = new ProductResponseDto(product.Id, product.Name, product.Price);
         return Results.Ok(result);
     }
-);
+).WithSummary("Returns product by it's Id")
+.Produces<ProductResponseDto>(200)
+.Produces(404);
 
 app.MapPost(
     "/products",
@@ -52,7 +60,7 @@ app.MapPost(
         var resProduct = new ProductResponseDto(product.Id, product.Name, product.Price);
         return Results.Created($"/products/{resProduct.Id}", resProduct);
     }
-);
+).WithSummary("Creates a new product");
 
 app.MapPut(
     "/products/{id}",
@@ -76,7 +84,7 @@ app.MapPut(
         service.Update(id, newProd);
         return Results.NoContent();
     }
-);
+).WithSummary("Updates an existing product");
 
 app.MapDelete(
     "/products/{id}",
@@ -91,6 +99,6 @@ app.MapDelete(
         service.Delete(id);
         return Results.NoContent();
     }
-);
+).WithSummary("Deletes an existing product");
 
 app.Run();
