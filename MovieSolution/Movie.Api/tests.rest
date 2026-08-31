@@ -1,0 +1,23 @@
+POST http://localhost:5280/movies HTTP/1.1
+Content-Type: application/json
+
+{
+    "Title": "Inception",
+    "Genre": "Sci-fi",
+    "ReleaseYear": 2010
+}
+
+
+###
+
+POST http://localhost:5280/movies/1/reviews HTTP/1.1
+Content-Type: application/json
+
+{
+    "Rating": 5,
+    "Reviewer": "John"
+}
+
+###
+
+GET http://localhost:5280/movies HTTP/1.1

@@ -3,9 +3,9 @@ using Movie.Domain.Entities;
 
 public interface IMovieRepository
 {
-    public List<Movie> GetAll();
-    public Movie? GetById(int Id);
-    public void Add(Movie movie);
-    public bool Update(Movie movie);
-    public bool Delete(int Id);
+    public Task<List<Movie>> GetAllAsync();
+    public Task<Movie?> GetByIdAsync(int Id);
+    public Task AddAsync(Movie movie);
+    public Task<bool> UpdateAsync(Movie movie);
+    public Task<bool> DeleteAsync(int Id);
 }

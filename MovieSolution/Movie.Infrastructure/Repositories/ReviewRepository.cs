@@ -2,36 +2,35 @@ namespace Movie.Infrastructure.Repositories;
 
 using Movie.Domain.Entities;
 using Movie.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 public class ReviewRepository : IReviewRepository
 {
-    private readonly List<Review> _reviews = new();
-    public List<Review> GetAllReviews()
+    private readonly MovieDbContext _context;
+    public ReviewRepository(MovieDbContext context)
     {
-        return _reviews;
+        _context = context;
     }
-    public List<Review> GetMovieReviews(int movieId)
-    {
-        return _reviews.Where(r => r.MovieId == movieId).ToList();
-    }
-    public Review? GetReviewById(int reviewId)
+    public async Task<List<Review>> GetAllReviewsAsync() => await _context.Reviews.ToListAsync();
+    public async Task<List<Review>> GetMovieReviewsAsync(int movieId) => await _context.Reviews.Where(r => r.MovieId == movieId).ToListAsync();
+    public async Task<Review?> GetReviewByIdAsync(int reviewId)
     {
         if(reviewId <= 0)
             return null;
-        var review = _reviews.FirstOrDefault(r => r.Id == reviewId);
+        var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
         if(review is null)
             return null;
         return review;
     }
-    public void PostReview(Review review)
+    public async Task PostReviewAsync(Review review)
     {
         if(review is null) return;
-        _reviews.Add(review);
+        await _context.Reviews.AddAsync(review);
     }
-    public bool UpdateReview(Review review)
+    public async Task<bool> UpdateReviewAsync(Review review)
     {
         if(review is null) return false;
-        var fetchedRev = _reviews.FirstOrDefault(r => r.Id == review.Id);
+        var fetchedRev = await GetReviewByIdAsync(review.Id);
         if(fetchedRev is null) return false;
 
         fetchedRev.MovieId = review.MovieId;
@@ -39,13 +38,13 @@ public class ReviewRepository : IReviewRepository
         fetchedRev.Reviewer = review.Reviewer;
         return true;
     }
-    public bool DeleteReview(int id)
+    public async Task<bool> DeleteReviewAsync(int id)
     {
         if(id <= 0) return false;
-        var review = _reviews.FirstOrDefault(r => r.Id == id);
+        var review = await GetReviewByIdAsync(id);
 
         if(review is null) return false;
-        _reviews.Remove(review);
+        _context.Reviews.Remove(review);
         return true;
     }
 }

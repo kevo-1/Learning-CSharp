@@ -2,41 +2,49 @@ namespace Movie.Infrastructure.Repositories;
 
 using Movie.Domain.Entities;
 using Movie.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 public class MovieRepository: IMovieRepository
 {
-    private readonly List<Movie> _movies = new();
+    private readonly MovieDbContext _context;
 
-    public List<Movie> GetAll()
+
+    public MovieRepository(MovieDbContext context)
     {
-        return _movies;
+        _context = context;
     }
-    public Movie? GetById(int Id)
+
+
+    public async Task<List<Movie>> GetAllAsync() 
+        => await _context.Movies.ToListAsync();
+
+
+    public async Task<Movie?> GetByIdAsync(int Id)
+        => await _context.Movies.FirstOrDefaultAsync(m => m.Id == Id);
+
+
+    public async Task AddAsync(Movie movie)
     {
-        var movie = _movies.FirstOrDefault(m => m.Id == Id);
-        return movie;
+        _context.Movies.Add(movie);
     }
-    public void Add(Movie movie)
-    {
-        if(movie is null) return;
-        _movies.Add(movie);
-    }
-    public bool Update(Movie movie)
+
+
+    public async Task<bool> UpdateAsync(Movie movie)
     {
         if(movie is null) return false;
-        var res = _movies.FirstOrDefault(m => m.Id == movie.Id);
-        if(res is null) return false;
-        res.Genre = movie.Genre;
-        res.Title = movie.Title;
-        res.ReleaseYear = movie.ReleaseYear;
+        var existing = await GetByIdAsync(movie.Id);
+        if(existing is null) return false;
+        existing.Genre = movie.Genre;
+        existing.Title = movie.Title;
+        existing.ReleaseYear = movie.ReleaseYear;
         return true;
     }
-    public bool Delete(int Id)
+    public async Task<bool> DeleteAsync(int Id)
     {
         if(Id <= 0) return false;
-        var movie = _movies.FirstOrDefault(m => m.Id == Id);
+        var movie = await GetByIdAsync(Id);
         if(movie is null) return false;
-        _movies.Remove(movie);
+        _context.Movies.Remove(movie);
         return true;
     }
 }

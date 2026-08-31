@@ -4,16 +4,20 @@ namespace Movie.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    public IMovieRepository Movies {get;}
-    public IReviewRepository Reviews {get;}
+    private readonly MovieDbContext _dbContext;
 
-    public UnitOfWork(IMovieRepository movieRepo, IReviewRepository reviewRepo)
+    public IMovieRepository Movies { get; }
+    public IReviewRepository Reviews { get; }
+
+    public UnitOfWork(MovieDbContext context, IMovieRepository movies, IReviewRepository reviews)
     {
-        Movies = movieRepo;
-        Reviews = reviewRepo;
+        _dbContext = context;
+        Movies = movies;
+        Reviews = reviews;
     }
-    public void SaveChanges()
+
+    public async Task SaveChangesAsync()
     {
-        Console.WriteLine("Changes Saved to both repositories!");
+        await _dbContext.SaveChangesAsync();
     }
 }
