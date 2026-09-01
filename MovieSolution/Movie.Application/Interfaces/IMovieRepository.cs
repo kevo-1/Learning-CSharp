@@ -1,4 +1,5 @@
 ﻿namespace Movie.Application.Interfaces;
+
 using Movie.Domain.Entities;
 
 public interface IMovieRepository

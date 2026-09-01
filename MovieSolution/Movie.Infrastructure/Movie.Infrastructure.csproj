@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="..\Movie.Domain\Movie.Domain.csproj" />
     <ProjectReference Include="..\Movie.Application\Movie.Application.csproj" />
@@ -18,5 +17,4 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
 </Project>
